@@ -1,12 +1,12 @@
 # app.py
 """
-Polyglot — AI Language Translator (Futuristic Animated Edition)
-----------------------------------------------------------------
-⚡ Real multilingual translation (Hugging Face)
-✨ Particle background + glowing progress
-🌙 Dynamic dark/light modes
-🧊 Neon glassmorphism and animated transitions
-🎧 Text-to-Speech, Confidence bar, Download option
+Polyglot — AI Language Translator (Professional Edition)
+-------------------------------------------------------
+✅ Real translation (Hugging Face)
+✅ Dynamic Light/Dark mode
+✅ Gradient theme + polished buttons
+✅ Text-to-Speech, confidence bar, swap/clear buttons
+✅ Responsive modern design
 """
 
 import streamlit as st
@@ -18,14 +18,18 @@ import io
 # -----------------------------------------------------------
 # PAGE CONFIG
 # -----------------------------------------------------------
-st.set_page_config(page_title="Polyglot — AI Language Translator", page_icon="🌐", layout="wide")
+st.set_page_config(
+    page_title="Polyglot — AI Language Translator",
+    page_icon="🌐",
+    layout="wide",
+)
 
 # -----------------------------------------------------------
 # SIDEBAR CONTROLS
 # -----------------------------------------------------------
 st.sidebar.title("🌐 Polyglot Settings")
 
-dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True)
+dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=False)
 
 languages = {
     "🇬🇧 English": "en",
@@ -39,7 +43,7 @@ languages = {
     "🇰🇷 Korean": "ko",
 }
 
-# Initialize session
+# Default states
 if "src_lang" not in st.session_state:
     st.session_state.src_lang = "🇬🇧 English"
 if "tgt_lang" not in st.session_state:
@@ -58,32 +62,19 @@ if st.sidebar.button("↔️ Swap Languages"):
     st.sidebar.success("Languages swapped!")
 
 # -----------------------------------------------------------
-# ANIMATED STYLING
+# COLOR SCHEME & CSS
 # -----------------------------------------------------------
 if dark_mode:
-    primary = "#00ffff"
-    secondary = "#9d4edd"
-    text_color = "#e6edf3"
-    bg_gradient = """
-    background: linear-gradient(-45deg, #020617, #0a0f2c, #1a0933, #01040f);
-    background-size: 600% 600%;
-    animation: gradientShift 20s ease infinite;
-    """
-    particle_color = "rgba(0,255,255,0.8)"
+    primary = "#7b5cf9"
+    bg_grad = "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)"
+    text_color = "#f8fafc"
+    card_bg = "rgba(17,24,39,0.6)"
 else:
-    primary = "#3a7afe"
-    secondary = "#ff61c7"
-    text_color = "#0b1a33"
-    bg_gradient = """
-    background: linear-gradient(135deg, #dbe9ff, #f3e9ff, #e7fff3, #dbe9ff);
-    background-size: 600% 600%;
-    animation: gradientShift 16s ease infinite;
-    """
-    particle_color = "rgba(58,122,254,0.6)"
+    primary = "#4a60ff"
+    bg_grad = "linear-gradient(135deg, #e0f0ff 0%, #ece9ff 100%)"
+    text_color = "#0f172a"
+    card_bg = "rgba(255,255,255,0.7)"
 
-# -----------------------------------------------------------
-# CSS — Animated background, glowing buttons, particles
-# -----------------------------------------------------------
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -92,78 +83,46 @@ html, body, [class*="css"] {{
     color: {text_color};
 }}
 .main {{
-    {bg_gradient}
-    position: relative;
-    overflow: hidden;
+    background: {bg_grad};
+    background-size: 400% 400%;
+    animation: move 16s ease infinite;
 }}
-@keyframes gradientShift {{
+@keyframes move {{
   0% {{background-position: 0% 50%;}}
   50% {{background-position: 100% 50%;}}
   100% {{background-position: 0% 50%;}}
 }}
-/* Particle Animation */
-.particle {{
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  background: {particle_color};
-  border-radius: 50%;
-  animation: floatParticle 12s linear infinite;
-  box-shadow: 0 0 10px {particle_color};
-}}
-@keyframes floatParticle {{
-  0% {{
-    transform: translateY(0) translateX(0);
-    opacity: 1;
-  }}
-  100% {{
-    transform: translateY(-200vh) translateX(20vw);
-    opacity: 0;
-  }}
-}}
 .glass {{
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    border-radius: 18px;
-    padding: 25px;
-    transition: all 0.4s ease;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-}}
-.glass:hover {{
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 0 25px {primary};
-}}
-.stButton>button {{
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(90deg, {primary}, {secondary});
-    color: white !important;
-    font-weight: 600;
-    padding: 0.6em 1em;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 20px {primary};
-}}
-.stButton>button:hover {{
-    transform: scale(1.06);
-    box-shadow: 0 0 40px {secondary};
+    background: {card_bg};
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }}
 .title {{
-    font-size: 34px;
+    font-size: 32px;
     font-weight: 700;
     text-align: center;
     color: {primary};
-    text-shadow: 0 0 20px {primary};
 }}
 .subtitle {{
     text-align: center;
-    font-size: 15px;
+    font-size: 14px;
     opacity: 0.9;
 }}
-.result {{
-    font-size:17px;
-    color:{text_color};
-    white-space: pre-wrap;
-    line-height: 1.6;
+button[kind="primary"], button[kind="secondary"], .stButton>button {{
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, {primary}, #8b5cf6);
+    color: white !important;
+    font-weight: 600;
+    padding: 0.6em 1em;
+    transition: all 0.2s ease-in-out;
+}}
+button[kind="primary"]:hover, .stButton>button:hover {{
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    filter: brightness(1.1);
 }}
 .footer {{
     text-align:center;
@@ -171,16 +130,13 @@ html, body, [class*="css"] {{
     opacity:0.8;
     margin-top:30px;
 }}
+.result {{
+    font-size:17px;
+    color:{text_color};
+    white-space: pre-wrap;
+}}
 </style>
 """, unsafe_allow_html=True)
-
-# -----------------------------------------------------------
-# PARTICLE OVERLAY
-# -----------------------------------------------------------
-particle_divs = "\n".join(
-    [f"<div class='particle' style='left:{i*10}%; top:{i*8}%; animation-delay:{i*0.8}s;'></div>" for i in range(15)]
-)
-st.markdown(f"<div>{particle_divs}</div>", unsafe_allow_html=True)
 
 # -----------------------------------------------------------
 # HEADER
@@ -189,13 +145,13 @@ st.markdown(f"""
 <div class="glass" style="text-align:center; margin-bottom:25px;">
   <div class="title">🌐 Polyglot — AI Language Translator</div>
   <div class="subtitle">
-    {'🌙 Neon Dark Mode' if dark_mode else '☀️ Aurora Light Mode'} | Powered by Hugging Face
+    Real-time neural translation powered by Hugging Face • { '🌙 Dark Mode' if dark_mode else '☀️ Light Mode' }
   </div>
 </div>
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------
-# MAIN LAYOUT
+# MAIN INTERFACE
 # -----------------------------------------------------------
 left, right = st.columns([2, 1], gap="large")
 
@@ -216,35 +172,28 @@ with left:
     st.markdown('</div>', unsafe_allow_html=True)
 
 with right:
-    st.markdown('<div class="glass">', unsafe_allow_html=True)
+    st.markdown(f'<div class="glass">', unsafe_allow_html=True)
     st.subheader("🧭 Info")
     st.markdown(f"**Source:** {src_lang}")
     st.markdown(f"**Target:** {tgt_lang}")
     st.markdown(f"**Temperature:** {temperature:.2f}")
     st.markdown("---")
-    st.markdown("💡 Supports 50+ language pairs via Helsinki-NLP models")
+    st.markdown("✅ Supports 50+ language pairs (Helsinki-NLP models)")
     st.markdown("🎧 Optional speech playback for translated text")
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -----------------------------------------------------------
-# TRANSLATION FUNCTION (with fallback)
+# TRANSLATION FUNCTION
 # -----------------------------------------------------------
 @st.cache_resource
 def load_translator(src_code, tgt_code):
-    """Load translation model with multilingual fallback."""
     if src_code == "auto":
         src_code = "en"
-    if src_code == tgt_code:
-        return None
     model_name = f"Helsinki-NLP/opus-mt-{src_code}-{tgt_code}"
-    try:
-        return pipeline("translation", model=model_name)
-    except Exception:
-        st.warning(f"No direct model for {src_code}-{tgt_code}. Using multilingual fallback.")
-        return pipeline("translation", model="facebook/m2m100_418M")
+    return pipeline("translation", model=model_name)
 
 # -----------------------------------------------------------
-# TRANSLATION EXECUTION
+# TRANSLATION ACTION
 # -----------------------------------------------------------
 if translate_btn:
     if not text.strip():
@@ -254,40 +203,24 @@ if translate_btn:
         tgt_code = languages.get(tgt_lang, "en")
 
         st.info(f"Translating from **{src_lang}** → **{tgt_lang}** ...")
-
-        # Animated glowing progress
-        progress_container = st.empty()
-        for pct in range(0, 101, 5):
-            bar = f"""
-            <div style='background:linear-gradient(90deg,{primary},{secondary});
-                        height:10px;border-radius:8px;width:{pct}%;
-                        box-shadow:0 0 20px {primary};'></div>"""
-            progress_container.markdown(bar, unsafe_allow_html=True)
-            time.sleep(0.03)
-        progress_container.empty()
+        progress = st.progress(0)
+        for pct in range(0, 101, 10):
+            time.sleep(0.05)
+            progress.progress(pct)
+        progress.empty()
 
         try:
             translator = load_translator(src_code, tgt_code)
-            if translator is None:
-                st.info("Same source and target language — returning original text.")
-                result = text
-            else:
-                result = translator(text, max_length=512)[0]["translation_text"]
-
+            result = translator(text, max_length=512)[0]["translation_text"]
             conf_score = round(max(0.75, 1.0 - temperature * 0.4), 3)
 
-            # Output
-            st.markdown('<div class="glass">', unsafe_allow_html=True)
+            # Output box
+            st.markdown(f'<div class="glass">', unsafe_allow_html=True)
             st.subheader("🔹 Translated Text")
             st.markdown(f'<div class="result">{result}</div>', unsafe_allow_html=True)
 
             if show_conf:
-                glow_bar = f"""
-                <div style='background:linear-gradient(90deg,{primary},{secondary});
-                            height:12px;width:{conf_score*100}%;
-                            border-radius:8px;
-                            box-shadow:0 0 25px {primary};'></div>"""
-                st.markdown(glow_bar, unsafe_allow_html=True)
+                st.progress(conf_score)
                 st.caption(f"Confidence: {conf_score * 100:.1f}%")
 
             st.download_button("⬇️ Download Translation", data=result, file_name="translation.txt")
@@ -312,7 +245,7 @@ if translate_btn:
 st.markdown(f"""
 <hr>
 <div class="footer">
-  <strong>Polyglot v6</strong> — Built with ❤️ using Streamlit & Hugging Face<br>
-  {'🌙 Neon Dark Mode Active' if dark_mode else '☀️ Aurora Light Mode Active'}
+  <strong>Polyglot v3</strong> — Built with ❤️ using <b>Streamlit</b> & <b>Transformers</b><br>
+  { '🌙 Dark Mode Enabled' if dark_mode else '☀️ Light Mode Active' } | Powered by <b>Hugging Face</b>
 </div>
 """, unsafe_allow_html=True)
