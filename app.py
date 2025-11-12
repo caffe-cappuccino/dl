@@ -33,7 +33,7 @@ except Exception:
 def load_default_glossary():
     """Loads glossary from GitHub raw file as default"""
     try:
-        url = "https://raw.githubusercontent.com/<YOUR_GITHUB_USERNAME>/EACT-RGCLD-Demo/main/glossary.csv"
+        url = "https://raw.githubusercontent.com/caffe-cappuccino/dl/refs/heads/main/glossary.csv"
         df = pd.read_csv(url)
         return df
     except Exception:
