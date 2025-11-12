@@ -1,13 +1,12 @@
 # app.py
 """
-Polyglot — AI Language Translator (Animated Dark/Light Edition)
----------------------------------------------------------------
-✅ Real translations (Hugging Face)
-✅ True full-page dark/light mode
-✅ Animated gradient background
-✅ Glowing buttons & smooth hover transitions
-✅ Glass cards with subtle movement
-✅ Works perfectly on Streamlit Cloud
+Polyglot — AI Language Translator (Animated Dark/Light Edition with Model Fallback)
+----------------------------------------------------------------
+✅ Real translations using Hugging Face models
+✅ Works even for same-language or unsupported pairs
+✅ Animated full-page dark/light UI
+✅ Gradient backgrounds, neon buttons, and glass effects
+✅ TTS, confidence bar, and multilingual fallback
 """
 
 import streamlit as st
@@ -40,6 +39,7 @@ languages = {
     "🇰🇷 Korean": "ko",
 }
 
+# Initialize session
 if "src_lang" not in st.session_state:
     st.session_state.src_lang = "🇬🇧 English"
 if "tgt_lang" not in st.session_state:
@@ -71,7 +71,7 @@ if dark_mode:
     animation: gradientShift 18s ease infinite;
     """
 else:
-    # Energetic light mode
+    # Aurora light mode
     primary = "#3a7afe"
     secondary = "#ff61c7"
     text_color = "#0b1a33"
@@ -81,7 +81,6 @@ else:
     animation: gradientShift 16s ease infinite;
     """
 
-# Inject global CSS
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -119,7 +118,7 @@ html, body, [class*="css"] {{
 }}
 .stButton>button:hover {{
     transform: scale(1.05);
-    box-shadow: 0 0 20px {primary};
+    box-shadow: 0 0 25px {primary};
 }}
 .title {{
     font-size: 32px;
@@ -194,14 +193,23 @@ with right:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -----------------------------------------------------------
-# TRANSLATION FUNCTION
+# TRANSLATION FUNCTION (with fallback)
 # -----------------------------------------------------------
 @st.cache_resource
 def load_translator(src_code, tgt_code):
+    """Load translation model with multilingual fallback."""
     if src_code == "auto":
         src_code = "en"
+    # prevent invalid same-language pairs
+    if src_code == tgt_code:
+        return None
     model_name = f"Helsinki-NLP/opus-mt-{src_code}-{tgt_code}"
-    return pipeline("translation", model=model_name)
+    try:
+        return pipeline("translation", model=model_name)
+    except Exception:
+        # fallback multilingual model
+        st.warning(f"No direct model for {src_code}-{tgt_code}. Using multilingual fallback.")
+        return pipeline("translation", model="facebook/m2m100_418M")
 
 # -----------------------------------------------------------
 # TRANSLATION EXECUTION
@@ -222,7 +230,12 @@ if translate_btn:
 
         try:
             translator = load_translator(src_code, tgt_code)
-            result = translator(text, max_length=512)[0]["translation_text"]
+            if translator is None:
+                st.info("Same source and target language — returning original text.")
+                result = text
+            else:
+                result = translator(text, max_length=512)[0]["translation_text"]
+
             conf_score = round(max(0.75, 1.0 - temperature * 0.4), 3)
 
             # Output
@@ -256,7 +269,7 @@ if translate_btn:
 st.markdown(f"""
 <hr>
 <div class="footer">
-  <strong>Polyglot v4</strong> — Built with ❤️ using Streamlit & Hugging Face<br>
+  <strong>Polyglot v5</strong> — Built with ❤️ using Streamlit & Hugging Face<br>
   {'🌙 Neon Dark Mode Active' if dark_mode else '☀️ Aurora Light Mode Active'}
 </div>
 """, unsafe_allow_html=True)
