@@ -6,3 +6,4 @@ speechrecognition
 pydub
 gTTS
 streamlit-audiorecorder
+sentencepiece
