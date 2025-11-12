@@ -1,12 +1,12 @@
 # app.py
 """
-Polyglot — AI Language Translator (Animated Dark/Light Edition with Model Fallback)
+Polyglot — AI Language Translator (Futuristic Animated Edition)
 ----------------------------------------------------------------
-✅ Real translations using Hugging Face models
-✅ Works even for same-language or unsupported pairs
-✅ Animated full-page dark/light UI
-✅ Gradient backgrounds, neon buttons, and glass effects
-✅ TTS, confidence bar, and multilingual fallback
+⚡ Real multilingual translation (Hugging Face)
+✨ Particle background + glowing progress
+🌙 Dynamic dark/light modes
+🧊 Neon glassmorphism and animated transitions
+🎧 Text-to-Speech, Confidence bar, Download option
 """
 
 import streamlit as st
@@ -58,29 +58,32 @@ if st.sidebar.button("↔️ Swap Languages"):
     st.sidebar.success("Languages swapped!")
 
 # -----------------------------------------------------------
-# ANIMATED STYLE SYSTEM
+# ANIMATED STYLING
 # -----------------------------------------------------------
 if dark_mode:
-    # Neon dark mode
     primary = "#00ffff"
-    secondary = "#7b5cf9"
+    secondary = "#9d4edd"
     text_color = "#e6edf3"
-    bg_animation = """
-    background: linear-gradient(-45deg, #0d1117, #1b2430, #2b3467, #0d1117);
-    background-size: 400% 400%;
-    animation: gradientShift 18s ease infinite;
+    bg_gradient = """
+    background: linear-gradient(-45deg, #020617, #0a0f2c, #1a0933, #01040f);
+    background-size: 600% 600%;
+    animation: gradientShift 20s ease infinite;
     """
+    particle_color = "rgba(0,255,255,0.8)"
 else:
-    # Aurora light mode
     primary = "#3a7afe"
     secondary = "#ff61c7"
     text_color = "#0b1a33"
-    bg_animation = """
+    bg_gradient = """
     background: linear-gradient(135deg, #dbe9ff, #f3e9ff, #e7fff3, #dbe9ff);
-    background-size: 400% 400%;
+    background-size: 600% 600%;
     animation: gradientShift 16s ease infinite;
     """
+    particle_color = "rgba(58,122,254,0.6)"
 
+# -----------------------------------------------------------
+# CSS — Animated background, glowing buttons, particles
+# -----------------------------------------------------------
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -89,22 +92,46 @@ html, body, [class*="css"] {{
     color: {text_color};
 }}
 .main {{
-    {bg_animation}
+    {bg_gradient}
+    position: relative;
+    overflow: hidden;
 }}
 @keyframes gradientShift {{
   0% {{background-position: 0% 50%;}}
   50% {{background-position: 100% 50%;}}
   100% {{background-position: 0% 50%;}}
 }}
+/* Particle Animation */
+.particle {{
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: {particle_color};
+  border-radius: 50%;
+  animation: floatParticle 12s linear infinite;
+  box-shadow: 0 0 10px {particle_color};
+}}
+@keyframes floatParticle {{
+  0% {{
+    transform: translateY(0) translateX(0);
+    opacity: 1;
+  }}
+  100% {{
+    transform: translateY(-200vh) translateX(20vw);
+    opacity: 0;
+  }}
+}}
 .glass {{
     background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    border-radius: 16px;
-    padding: 24px;
-    transition: transform 0.3s ease;
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 25px;
+    transition: all 0.4s ease;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
 }}
 .glass:hover {{
-    transform: translateY(-3px);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 0 25px {primary};
 }}
 .stButton>button {{
     border: none;
@@ -114,30 +141,23 @@ html, body, [class*="css"] {{
     font-weight: 600;
     padding: 0.6em 1em;
     transition: all 0.3s ease;
-    box-shadow: 0 0 12px rgba(0,0,0,0.25);
+    box-shadow: 0 0 20px {primary};
 }}
 .stButton>button:hover {{
-    transform: scale(1.05);
-    box-shadow: 0 0 25px {primary};
+    transform: scale(1.06);
+    box-shadow: 0 0 40px {secondary};
 }}
 .title {{
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 700;
     text-align: center;
     color: {primary};
-    margin-bottom: 5px;
-    text-shadow: 0 0 20px rgba(0,255,255,0.5);
+    text-shadow: 0 0 20px {primary};
 }}
 .subtitle {{
     text-align: center;
-    font-size: 14px;
+    font-size: 15px;
     opacity: 0.9;
-}}
-.footer {{
-    text-align:center;
-    font-size:13px;
-    opacity:0.8;
-    margin-top:30px;
 }}
 .result {{
     font-size:17px;
@@ -145,8 +165,22 @@ html, body, [class*="css"] {{
     white-space: pre-wrap;
     line-height: 1.6;
 }}
+.footer {{
+    text-align:center;
+    font-size:13px;
+    opacity:0.8;
+    margin-top:30px;
+}}
 </style>
 """, unsafe_allow_html=True)
+
+# -----------------------------------------------------------
+# PARTICLE OVERLAY
+# -----------------------------------------------------------
+particle_divs = "\n".join(
+    [f"<div class='particle' style='left:{i*10}%; top:{i*8}%; animation-delay:{i*0.8}s;'></div>" for i in range(15)]
+)
+st.markdown(f"<div>{particle_divs}</div>", unsafe_allow_html=True)
 
 # -----------------------------------------------------------
 # HEADER
@@ -200,14 +234,12 @@ def load_translator(src_code, tgt_code):
     """Load translation model with multilingual fallback."""
     if src_code == "auto":
         src_code = "en"
-    # prevent invalid same-language pairs
     if src_code == tgt_code:
         return None
     model_name = f"Helsinki-NLP/opus-mt-{src_code}-{tgt_code}"
     try:
         return pipeline("translation", model=model_name)
     except Exception:
-        # fallback multilingual model
         st.warning(f"No direct model for {src_code}-{tgt_code}. Using multilingual fallback.")
         return pipeline("translation", model="facebook/m2m100_418M")
 
@@ -222,11 +254,17 @@ if translate_btn:
         tgt_code = languages.get(tgt_lang, "en")
 
         st.info(f"Translating from **{src_lang}** → **{tgt_lang}** ...")
-        progress = st.progress(0)
-        for pct in range(0, 101, 8):
-            time.sleep(0.04)
-            progress.progress(pct)
-        progress.empty()
+
+        # Animated glowing progress
+        progress_container = st.empty()
+        for pct in range(0, 101, 5):
+            bar = f"""
+            <div style='background:linear-gradient(90deg,{primary},{secondary});
+                        height:10px;border-radius:8px;width:{pct}%;
+                        box-shadow:0 0 20px {primary};'></div>"""
+            progress_container.markdown(bar, unsafe_allow_html=True)
+            time.sleep(0.03)
+        progress_container.empty()
 
         try:
             translator = load_translator(src_code, tgt_code)
@@ -244,7 +282,12 @@ if translate_btn:
             st.markdown(f'<div class="result">{result}</div>', unsafe_allow_html=True)
 
             if show_conf:
-                st.progress(conf_score)
+                glow_bar = f"""
+                <div style='background:linear-gradient(90deg,{primary},{secondary});
+                            height:12px;width:{conf_score*100}%;
+                            border-radius:8px;
+                            box-shadow:0 0 25px {primary};'></div>"""
+                st.markdown(glow_bar, unsafe_allow_html=True)
                 st.caption(f"Confidence: {conf_score * 100:.1f}%")
 
             st.download_button("⬇️ Download Translation", data=result, file_name="translation.txt")
@@ -269,7 +312,7 @@ if translate_btn:
 st.markdown(f"""
 <hr>
 <div class="footer">
-  <strong>Polyglot v5</strong> — Built with ❤️ using Streamlit & Hugging Face<br>
+  <strong>Polyglot v6</strong> — Built with ❤️ using Streamlit & Hugging Face<br>
   {'🌙 Neon Dark Mode Active' if dark_mode else '☀️ Aurora Light Mode Active'}
 </div>
 """, unsafe_allow_html=True)
