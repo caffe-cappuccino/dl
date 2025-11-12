@@ -1,6 +1,8 @@
 streamlit
-pandas
-matplotlib
 transformers
-sentence-transformers
-spacy
+pandas
+torch
+speechrecognition
+pydub
+gTTS
+streamlit-audiorecorder
