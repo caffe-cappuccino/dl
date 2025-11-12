@@ -1,12 +1,11 @@
 # app.py
 """
-Polyglot — AI Language Translator (True Black + Neon Pink/Orange Edition)
---------------------------------------------------------------------------
-🖤 Fully black background (all containers)
-🌸 Pink + Orange neon glow
-✨ Animated particle trail
-🧊 Glassmorphism UI, waving flag icons
-🎧 TTS + Download + Multilingual fallback
+Polyglot — AI Language Translator (Real Flags + True Dark Mode)
+---------------------------------------------------------------
+✅ Real flag icons with waving animation
+✅ Full-screen color-changing dark/light mode
+✅ Particle cursor trail + glowing progress bar
+✅ TTS, multilingual fallback, responsive layout
 """
 
 import streamlit as st
@@ -25,6 +24,7 @@ st.set_page_config(page_title="Polyglot — AI Language Translator", page_icon="
 # SIDEBAR
 # -----------------------------------------------------------
 st.sidebar.title("🌐 Polyglot Settings")
+dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True)
 
 languages = {
     "English": "gb",
@@ -56,132 +56,134 @@ if st.sidebar.button("↔️ Swap Languages"):
     st.sidebar.success("Languages swapped!")
 
 # -----------------------------------------------------------
-# GLOBAL CSS — TRUE BLACK BACKGROUND + NEON
+# COLOR SCHEME + BACKGROUND CSS
 # -----------------------------------------------------------
-st.markdown("""
+if dark_mode:
+    primary = "#00ffff"
+    secondary = "#7b5cf9"
+    text_color = "#f2f4f8"
+    bg_css = """
+    body, .main {
+        background: radial-gradient(circle at top left, #010409, #0d1117, #1b2430);
+        background-attachment: fixed;
+        color: #f2f4f8;
+    }
+    """
+    particle_color = "rgba(0,255,255,0.9)"
+else:
+    primary = "#3a7afe"
+    secondary = "#ff61c7"
+    text_color = "#0b1a33"
+    bg_css = """
+    body, .main {
+        background: radial-gradient(circle at top left, #f4f8ff, #ffffff, #f9ecff);
+        background-attachment: fixed;
+        color: #0b1a33;
+    }
+    """
+    particle_color = "rgba(58,122,254,0.7)"
+
+# -----------------------------------------------------------
+# GLOBAL CSS
+# -----------------------------------------------------------
+st.markdown(f"""
 <style>
+{bg_css}
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-
-/* ---- BASE ---- */
-html, body, [class*="css"] {
+html, body, [class*="css"] {{
     font-family: 'Inter', sans-serif;
-    background-color: #000000 !important;
-    color: #fcefff !important;
-}
-
-/* ---- STREAMLIT CONTAINERS ---- */
-section[data-testid="stAppViewContainer"],
-section[data-testid="stVerticalBlock"],
-div.block-container,
-[data-testid="stSidebar"],
-.main {
-    background-color: #000000 !important;
-    color: #fcefff !important;
-}
-
-/* ---- GLASS CARDS ---- */
-.glass {
-    background: rgba(255, 255, 255, 0.05);
+}}
+.glass {{
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
     border-radius: 16px;
     padding: 22px;
-    backdrop-filter: blur(12px);
     transition: all 0.3s ease;
-    box-shadow: 0 0 30px rgba(255, 102, 196, 0.25);
-}
-.glass:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}}
+.glass:hover {{
     transform: translateY(-5px);
-    box-shadow: 0 0 40px rgba(255, 159, 69, 0.5);
-}
-
-/* ---- BUTTONS ---- */
-.stButton>button {
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+}}
+.stButton>button {{
     border: none;
     border-radius: 10px;
-    background: linear-gradient(90deg, #ff66c4, #ff9f45);
+    background: linear-gradient(90deg, {primary}, {secondary});
     color: white !important;
     font-weight: 600;
     padding: 0.6em 1em;
     transition: all 0.3s ease;
-    box-shadow: 0 0 25px #ff66c4;
-}
-.stButton>button:hover {
+    box-shadow: 0 0 15px {primary};
+}}
+.stButton>button:hover {{
     transform: scale(1.05);
-    box-shadow: 0 0 35px #ff9f45;
-}
-
-/* ---- TITLES ---- */
-.title {
+    box-shadow: 0 0 30px {secondary};
+}}
+.title {{
     font-size: 34px;
     font-weight: 800;
     text-align: center;
-    color: #ff66c4;
-    text-shadow: 0 0 25px #ff9f45;
-}
-.subtitle {
+    color: {primary};
+    text-shadow: 0 0 20px {primary};
+}}
+.subtitle {{
     text-align:center;
     font-size:14px;
     opacity:0.9;
-    color:#fcefff;
-}
-.result {
+}}
+.result {{
     font-size:17px;
-    color:#fcefff;
+    color:{text_color};
     line-height:1.6;
     white-space: pre-wrap;
-}
-
-/* ---- FLAG ICONS ---- */
-.flag {
+}}
+.flag {{
     width: 32px;
     height: 22px;
     border-radius: 3px;
     margin-right: 6px;
     display:inline-block;
     animation: wave 2s ease-in-out infinite;
-}
-@keyframes wave {
-  0% { transform: rotate(0deg); }
-  25% { transform: rotate(4deg); }
-  50% { transform: rotate(-4deg); }
-  75% { transform: rotate(4deg); }
-  100% { transform: rotate(0deg); }
-}
-
-/* ---- FOOTER ---- */
-.footer {
+}}
+@keyframes wave {{
+  0% {{ transform: rotate(0deg); }}
+  25% {{ transform: rotate(4deg); }}
+  50% {{ transform: rotate(-4deg); }}
+  75% {{ transform: rotate(4deg); }}
+  100% {{ transform: rotate(0deg); }}
+}}
+.footer {{
     text-align:center;
     font-size:13px;
     opacity:0.85;
     margin-top:25px;
-    color:#ff9f45;
-}
+}}
 </style>
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------
 # CURSOR TRAIL PARTICLES
 # -----------------------------------------------------------
-particle_color = "rgba(255,153,102,0.9)"
 trail_html = f"""
 <div id="trail" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"></div>
 <script>
-const c=document.createElement('canvas');
-c.width=window.innerWidth;c.height=window.innerHeight;
-c.style.position='fixed';c.style.top='0';c.style.left='0';c.style.zIndex='1';c.style.pointerEvents='none';
-document.getElementById('trail').appendChild(c);
-const ctx=c.getContext('2d');
-let p=[];
+const canvas=document.createElement('canvas');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+canvas.style.position='fixed';canvas.style.top='0';canvas.style.left='0';canvas.style.zIndex='1';canvas.style.pointerEvents='none';
+document.getElementById('trail').appendChild(canvas);
+const ctx=canvas.getContext('2d');
+let particles=[];
 function rand(a,b){{return Math.random()*(b-a)+a;}}
-function spawn(x,y){{for(let i=0;i<3;i++)p.push({{x,y,vx:rand(-1,1),vy:rand(-1,1),life:rand(40,80),r:rand(1,3)}});}}
-function draw(){{ctx.clearRect(0,0,c.width,c.height);
-p.forEach((d,i)=>{{d.x+=d.vx;d.y+=d.vy;d.life--;
-ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,2*Math.PI);
-ctx.fillStyle='{particle_color}';ctx.globalAlpha=Math.max(0,d.life/80);
-ctx.fill();if(d.life<=0)p.splice(i,1);}});
+function spawn(x,y){{for(let i=0;i<4;i++)particles.push({{x,y,vx:rand(-1,1),vy:rand(-1,1),life:rand(40,80),r:rand(1,3)}});}}
+function draw(){{ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach((p,i)=>{{p.x+=p.vx;p.y+=p.vy;p.life--;
+ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,2*Math.PI);
+ctx.fillStyle='{particle_color}';ctx.globalAlpha=Math.max(0,p.life/80);
+ctx.fill();if(p.life<=0)particles.splice(i,1);}});
 requestAnimationFrame(draw);}}
 draw();
 window.addEventListener('mousemove',e=>spawn(e.clientX,e.clientY));
-window.addEventListener('resize',()=>{{c.width=window.innerWidth;c.height=window.innerHeight;}});
+window.addEventListener('resize',()=>{{canvas.width=window.innerWidth;canvas.height=window.innerHeight;}});
 </script>
 """
 components.html(trail_html, height=1, scrolling=False)
@@ -189,10 +191,10 @@ components.html(trail_html, height=1, scrolling=False)
 # -----------------------------------------------------------
 # HEADER
 # -----------------------------------------------------------
-st.markdown("""
+st.markdown(f"""
 <div class="glass" style="text-align:center;margin-bottom:25px;">
   <div class="title">🌐 Polyglot — AI Language Translator</div>
-  <div class="subtitle">🖤 Jet Black Interface • 🌸 Pink + Orange Neon • Powered by Hugging Face</div>
+  <div class="subtitle">{'🌙 Neon Dark Mode' if dark_mode else '☀️ Aurora Light Mode'} | Powered by Hugging Face</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -231,7 +233,7 @@ with right:
     st.markdown(f"**Target:** {flag_img(languages.get(tgt_lang, 'in'))} {tgt_lang}", unsafe_allow_html=True)
     st.markdown(f"**Temperature:** {temperature:.2f}")
     st.markdown("---")
-    st.markdown("💡 Supports 50+ language pairs (Helsinki-NLP + M2M100 fallback)")
+    st.markdown("✅ Supports 50+ language pairs (Helsinki-NLP + M2M100 fallback)")
     st.markdown("🎧 Optional speech playback for translated text")
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -261,14 +263,13 @@ if translate_btn:
         tgt_code = languages.get(tgt_lang, "en")
 
         st.info(f"Translating from **{src_lang}** → **{tgt_lang}** ...")
-
         prog = st.empty()
         for pct in range(0, 101, 8):
             bar = f"""
             <div style='background:rgba(255,255,255,0.1);border-radius:10px;padding:4px;'>
                 <div style='width:{pct}%;height:12px;border-radius:8px;
-                    background:linear-gradient(90deg,#ff66c4,#ff9f45);
-                    box-shadow:0 0 20px #ff66c4;'></div>
+                    background:linear-gradient(90deg,{primary},{secondary});
+                    box-shadow:0 0 20px {primary};'></div>
             </div>"""
             prog.markdown(bar, unsafe_allow_html=True)
             time.sleep(0.03)
@@ -280,18 +281,16 @@ if translate_btn:
                 result = text
             else:
                 result = translator(text, max_length=512)[0]["translation_text"]
-
             conf_score = round(max(0.7, 1.0 - temperature * 0.4), 3)
             st.markdown('<div class="glass">', unsafe_allow_html=True)
             st.subheader("🔹 Translated Text")
             st.markdown(f"<div class='result'>{result}</div>", unsafe_allow_html=True)
-
             if show_conf:
                 st.markdown(f"""
                 <div style='background:rgba(255,255,255,0.05);border-radius:10px;padding:4px;margin-top:10px;'>
                     <div style='width:{conf_score*100}%;height:12px;border-radius:8px;
-                        background:linear-gradient(90deg,#ff9f45,#ff66c4);
-                        box-shadow:0 0 18px #ff66c4;'></div>
+                        background:linear-gradient(90deg,{secondary},{primary});
+                        box-shadow:0 0 18px {primary};'></div>
                 </div>""", unsafe_allow_html=True)
                 st.caption(f"Confidence: {conf_score*100:.1f}%")
 
@@ -314,10 +313,10 @@ if translate_btn:
 # -----------------------------------------------------------
 # FOOTER
 # -----------------------------------------------------------
-st.markdown("""
+st.markdown(f"""
 <hr>
 <div class="footer">
-  <strong>Polyglot v10</strong> — Built with ❤️ using Streamlit & Hugging Face<br>
-  🌸 Neon Pink/Orange Mode Active
+  <strong>Polyglot v8</strong> — Built with ❤️ using Streamlit & Hugging Face<br>
+  {'🌙 Dark Mode Active' if dark_mode else '☀️ Light Mode Active'}
 </div>
 """, unsafe_allow_html=True)
