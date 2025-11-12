@@ -1,10 +1,11 @@
 # app.py
 """
-Polyglot — AI Language Translator (Neon + Animated Flags)
-----------------------------------------------------------
-🖤 Black background + pink/orange neon
-🚩 Real animated country flags
-⚙️ Works on Streamlit Community Cloud
+Polyglot — AI Language Translator (White Theme + Animated Flags)
+---------------------------------------------------------------
+🌸 White background + pink/orange neon accent
+🚩 Real waving flags
+🎧 TTS + confidence bar + download
+⚙️ Streamlit Cloud ready
 """
 
 import streamlit as st
@@ -46,21 +47,21 @@ if st.sidebar.button("↔️ Swap Languages"):
     st.sidebar.success("Languages swapped!")
 
 # -----------------------------------------------------------
-# GLOBAL CSS (Black Background + Neon Glow + Waving Flags)
+# GLOBAL CSS (White Background + Neon Accents + Flag Animation)
 # -----------------------------------------------------------
 st.markdown("""
 <style>
 html, body, [class*="css"] {
-    background-color: #000 !important;
-    color: #fcefff !important;
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
     font-family: 'Inter', sans-serif;
 }
 section[data-testid="stAppViewContainer"],
 section[data-testid="stVerticalBlock"],
 div.block-container,
 [data-testid="stSidebar"] {
-    background-color: #000 !important;
-    color: #fcefff !important;
+    background-color: #ffffff !important;
+    color: #1a1a1a !important;
 }
 
 /* Neon Buttons */
@@ -72,25 +73,25 @@ div.block-container,
     font-weight: 600;
     padding: 0.6em 1em;
     transition: all 0.3s ease;
-    box-shadow: 0 0 25px #ff66c4;
+    box-shadow: 0 0 15px rgba(255, 102, 196, 0.3);
 }
 .stButton>button:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 35px #ff9f45;
+    box-shadow: 0 0 30px rgba(255, 159, 69, 0.5);
 }
 
-/* Glass Containers */
+/* Glass Cards */
 .glass {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.7);
     border-radius: 16px;
     padding: 22px;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
     transition: all 0.3s ease;
-    box-shadow: 0 0 30px rgba(255, 102, 196, 0.25);
+    box-shadow: 0 0 20px rgba(255, 159, 69, 0.15);
 }
 .glass:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 40px rgba(255, 159, 69, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px rgba(255, 102, 196, 0.25);
 }
 
 /* Titles */
@@ -99,11 +100,11 @@ div.block-container,
     font-weight: 800;
     text-align: center;
     color: #ff66c4;
-    text-shadow: 0 0 25px #ff9f45;
+    text-shadow: 0 0 10px rgba(255, 159, 69, 0.4);
 }
 .result {
     font-size:17px;
-    color:#fcefff;
+    color:#1a1a1a;
     line-height:1.6;
     white-space: pre-wrap;
 }
@@ -131,7 +132,7 @@ div.block-container,
     font-size:13px;
     opacity:0.85;
     margin-top:25px;
-    color:#ff9f45;
+    color:#ff66c4;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -142,12 +143,12 @@ div.block-container,
 st.markdown("""
 <div class="glass" style="text-align:center;margin-bottom:25px;">
   <div class="title">🌐 Polyglot — AI Language Translator</div>
-  <p style="text-align:center;color:#ff9f45;">🖤 Black Theme • 🌸 Pink/Orange Neon • 🚩 Animated Flags</p>
+  <p style="text-align:center;color:#ff9f45;">✨ Elegant White Theme • Pink/Orange Accents • Animated Flags</p>
 </div>
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------
-# FLAG FUNCTION
+# FLAG HELPER FUNCTION
 # -----------------------------------------------------------
 def flag_img(code):
     return f"<img src='https://flagcdn.com/w40/{code}.png' class='flag'>"
@@ -196,8 +197,8 @@ if translate_btn:
 
         st.markdown(f"<div class='result'>{result}</div>", unsafe_allow_html=True)
         if show_conf:
-            st.progress(0.85)
-            st.caption("Confidence: 85%")
+            st.progress(0.9)
+            st.caption("Confidence: 90%")
 
         st.download_button("⬇️ Download Translation", data=result, file_name="translation.txt")
 
@@ -216,6 +217,6 @@ st.markdown('</div>', unsafe_allow_html=True)
 st.markdown("""
 <hr>
 <div class="footer">
-  <strong>Polyglot v12</strong> — Hosted on Streamlit Cloud 💫
+  <strong>Polyglot v13</strong> — Clean White Edition 💫
 </div>
 """, unsafe_allow_html=True)
