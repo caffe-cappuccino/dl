@@ -143,7 +143,7 @@ div.block-container,
 st.markdown("""
 <div class="glass" style="text-align:center;margin-bottom:25px;">
   <div class="title">🌐 Polyglot — AI Language Translator</div>
-  <p style="text-align:center;color:#ff9f45;">✨ Elegant White Theme • Pink/Orange Accents • Animated Flags</p>
+  <p style="text-align:center;color:#ff9f45;"></p>
 </div>
 """, unsafe_allow_html=True)
 
