@@ -1,12 +1,11 @@
 # app.py
 """
-Polyglot — AI Language Translator (Final Animated Edition)
------------------------------------------------------------
-⚡ Real multilingual translation (Hugging Face)
-✨ Animated particle trail & waving flags
-🌙 True dark/light gradient modes
-🧊 Neon glassmorphism, glowing bars, transitions
-🎧 TTS, multilingual fallback, download button
+Polyglot — AI Language Translator (Real Flags + True Dark Mode)
+---------------------------------------------------------------
+✅ Real flag icons with waving animation
+✅ Full-screen color-changing dark/light mode
+✅ Particle cursor trail + glowing progress bar
+✅ TTS, multilingual fallback, responsive layout
 """
 
 import streamlit as st
@@ -28,25 +27,25 @@ st.sidebar.title("🌐 Polyglot Settings")
 dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=True)
 
 languages = {
-    "🇬🇧 English": "en",
-    "🇮🇳 Hindi": "hi",
-    "🇫🇷 French": "fr",
-    "🇪🇸 Spanish": "es",
-    "🇩🇪 German": "de",
-    "🇮🇹 Italian": "it",
-    "🇨🇳 Chinese": "zh",
-    "🇯🇵 Japanese": "ja",
-    "🇰🇷 Korean": "ko",
+    "English": "gb",
+    "Hindi": "in",
+    "French": "fr",
+    "Spanish": "es",
+    "German": "de",
+    "Italian": "it",
+    "Chinese": "cn",
+    "Japanese": "jp",
+    "Korean": "kr",
 }
 
 if "src_lang" not in st.session_state:
-    st.session_state.src_lang = "🇬🇧 English"
+    st.session_state.src_lang = "English"
 if "tgt_lang" not in st.session_state:
-    st.session_state.tgt_lang = "🇮🇳 Hindi"
+    st.session_state.tgt_lang = "Hindi"
 if "input_text" not in st.session_state:
     st.session_state.input_text = ""
 
-src_lang = st.sidebar.selectbox("Source Language", ["🌍 Auto Detect"] + list(languages.keys()), index=1)
+src_lang = st.sidebar.selectbox("Source Language", ["Auto Detect"] + list(languages.keys()), index=1)
 tgt_lang = st.sidebar.selectbox("Target Language", list(languages.keys()), index=0)
 show_conf = st.sidebar.checkbox("Show Confidence Score", value=True)
 temperature = st.sidebar.slider("Translation Temperature", 0.0, 1.0, 0.3, 0.05)
@@ -57,26 +56,30 @@ if st.sidebar.button("↔️ Swap Languages"):
     st.sidebar.success("Languages swapped!")
 
 # -----------------------------------------------------------
-# COLOR SCHEME & STYLES
+# COLOR SCHEME + BACKGROUND CSS
 # -----------------------------------------------------------
 if dark_mode:
-    primary = "#00f0ff"
+    primary = "#00ffff"
     secondary = "#7b5cf9"
-    text_color = "#e6edf3"
-    bg_animation = """
-    background: linear-gradient(-45deg, #03040a, #0a1124, #151734, #03040a);
-    background-size: 400% 400%;
-    animation: gradientShift 18s ease infinite;
+    text_color = "#f2f4f8"
+    bg_css = """
+    body, .main {
+        background: radial-gradient(circle at top left, #010409, #0d1117, #1b2430);
+        background-attachment: fixed;
+        color: #f2f4f8;
+    }
     """
-    particle_color = "rgba(0,255,255,0.8)"
+    particle_color = "rgba(0,255,255,0.9)"
 else:
     primary = "#3a7afe"
     secondary = "#ff61c7"
     text_color = "#0b1a33"
-    bg_animation = """
-    background: linear-gradient(135deg, #dbe9ff, #f3e9ff, #e7fff3, #dbe9ff);
-    background-size: 400% 400%;
-    animation: gradientShift 16s ease infinite;
+    bg_css = """
+    body, .main {
+        background: radial-gradient(circle at top left, #f4f8ff, #ffffff, #f9ecff);
+        background-attachment: fixed;
+        color: #0b1a33;
+    }
     """
     particle_color = "rgba(58,122,254,0.7)"
 
@@ -85,18 +88,10 @@ else:
 # -----------------------------------------------------------
 st.markdown(f"""
 <style>
+{bg_css}
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 html, body, [class*="css"] {{
     font-family: 'Inter', sans-serif;
-    color: {text_color};
-}}
-.main {{
-    {bg_animation}
-}}
-@keyframes gradientShift {{
-  0% {{background-position: 0% 50%;}}
-  50% {{background-position: 100% 50%;}}
-  100% {{background-position: 0% 50%;}}
 }}
 .glass {{
     background: rgba(255,255,255,0.05);
@@ -104,11 +99,11 @@ html, body, [class*="css"] {{
     border-radius: 16px;
     padding: 22px;
     transition: all 0.3s ease;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
 }}
 .glass:hover {{
     transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
 }}
 .stButton>button {{
     border: none;
@@ -142,19 +137,19 @@ html, body, [class*="css"] {{
     line-height:1.6;
     white-space: pre-wrap;
 }}
-.flag-wave {{
-  display:inline-block;
-  animation: wave 1.6s ease-in-out infinite;
-  transform-origin: 50% 60%;
-  font-size: 18px;
-  margin-right: 8px;
+.flag {{
+    width: 32px;
+    height: 22px;
+    border-radius: 3px;
+    margin-right: 6px;
+    display:inline-block;
+    animation: wave 2s ease-in-out infinite;
 }}
 @keyframes wave {{
   0% {{ transform: rotate(0deg); }}
-  20% {{ transform: rotate(14deg); }}
-  40% {{ transform: rotate(-8deg); }}
-  60% {{ transform: rotate(14deg); }}
-  80% {{ transform: rotate(-4deg); }}
+  25% {{ transform: rotate(4deg); }}
+  50% {{ transform: rotate(-4deg); }}
+  75% {{ transform: rotate(4deg); }}
   100% {{ transform: rotate(0deg); }}
 }}
 .footer {{
@@ -167,36 +162,28 @@ html, body, [class*="css"] {{
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------
-# CURSOR TRAIL PARTICLES (HTML + JS)
+# CURSOR TRAIL PARTICLES
 # -----------------------------------------------------------
 trail_html = f"""
 <div id="trail" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"></div>
 <script>
-const trailCanvas = document.createElement('canvas');
-trailCanvas.style.position='fixed';
-trailCanvas.style.top='0';
-trailCanvas.style.left='0';
-trailCanvas.width=window.innerWidth;
-trailCanvas.height=window.innerHeight;
-trailCanvas.style.pointerEvents='none';
-trailCanvas.style.zIndex='1';
-document.getElementById('trail').appendChild(trailCanvas);
-const ctx = trailCanvas.getContext('2d');
+const canvas=document.createElement('canvas');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+canvas.style.position='fixed';canvas.style.top='0';canvas.style.left='0';canvas.style.zIndex='1';canvas.style.pointerEvents='none';
+document.getElementById('trail').appendChild(canvas);
+const ctx=canvas.getContext('2d');
 let particles=[];
 function rand(a,b){{return Math.random()*(b-a)+a;}}
-function spawn(x,y){{for(let i=0;i<4;i++)particles.push({{x:x,y:y,vx:rand(-1,1),vy:rand(-1,1),life:rand(50,80),r:rand(1,3)}});}}
-function draw(){{ctx.clearRect(0,0,trailCanvas.width,trailCanvas.height);
-particles.forEach((p,i)=>{{
-p.x+=p.vx;p.y+=p.vy;p.life-=1;
+function spawn(x,y){{for(let i=0;i<4;i++)particles.push({{x,y,vx:rand(-1,1),vy:rand(-1,1),life:rand(40,80),r:rand(1,3)}});}}
+function draw(){{ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach((p,i)=>{{p.x+=p.vx;p.y+=p.vy;p.life--;
 ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,2*Math.PI);
 ctx.fillStyle='{particle_color}';ctx.globalAlpha=Math.max(0,p.life/80);
-ctx.fill();
-if(p.life<=0)particles.splice(i,1);
-}});
+ctx.fill();if(p.life<=0)particles.splice(i,1);}});
 requestAnimationFrame(draw);}}
 draw();
 window.addEventListener('mousemove',e=>spawn(e.clientX,e.clientY));
-window.addEventListener('resize',()=>{{trailCanvas.width=window.innerWidth;trailCanvas.height=window.innerHeight;}});
+window.addEventListener('resize',()=>{{canvas.width=window.innerWidth;canvas.height=window.innerHeight;}});
 </script>
 """
 components.html(trail_html, height=1, scrolling=False)
@@ -207,9 +194,15 @@ components.html(trail_html, height=1, scrolling=False)
 st.markdown(f"""
 <div class="glass" style="text-align:center;margin-bottom:25px;">
   <div class="title">🌐 Polyglot — AI Language Translator</div>
-  <div class="subtitle">{'🌙 Neon Dark Mode' if dark_mode else '☀️ Aurora Light Mode'} | Futuristic UI with particle trail</div>
+  <div class="subtitle">{'🌙 Neon Dark Mode' if dark_mode else '☀️ Aurora Light Mode'} | Powered by Hugging Face</div>
 </div>
 """, unsafe_allow_html=True)
+
+# -----------------------------------------------------------
+# FLAG FUNCTION
+# -----------------------------------------------------------
+def flag_img(code):
+    return f"<img src='https://flagcdn.com/w40/{code}.png' class='flag'>"
 
 # -----------------------------------------------------------
 # MAIN LAYOUT
@@ -230,13 +223,14 @@ with left:
             st.experimental_rerun()
     with c3:
         st.caption(f"{len(text)} characters")
+
     st.markdown('</div>', unsafe_allow_html=True)
 
 with right:
     st.markdown('<div class="glass">', unsafe_allow_html=True)
     st.subheader("🧭 Info")
-    st.markdown(f"**Source:** <span class='flag-wave'>{src_lang.split()[0]}</span> {src_lang.split()[1]}", unsafe_allow_html=True)
-    st.markdown(f"**Target:** <span class='flag-wave'>{tgt_lang.split()[0]}</span> {tgt_lang.split()[1]}", unsafe_allow_html=True)
+    st.markdown(f"**Source:** {flag_img(languages.get(src_lang, 'gb'))} {src_lang}", unsafe_allow_html=True)
+    st.markdown(f"**Target:** {flag_img(languages.get(tgt_lang, 'in'))} {tgt_lang}", unsafe_allow_html=True)
     st.markdown(f"**Temperature:** {temperature:.2f}")
     st.markdown("---")
     st.markdown("✅ Supports 50+ language pairs (Helsinki-NLP + M2M100 fallback)")
@@ -244,7 +238,7 @@ with right:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # -----------------------------------------------------------
-# TRANSLATOR LOADER (CACHED)
+# TRANSLATOR FUNCTION
 # -----------------------------------------------------------
 @st.cache_resource
 def load_translator(src_code, tgt_code):
@@ -252,57 +246,51 @@ def load_translator(src_code, tgt_code):
         src_code = "en"
     if src_code == tgt_code:
         return None
-    model_name = f"Helsinki-NLP/opus-mt-{src_code}-{tgt_code}"
     try:
-        return pipeline("translation", model=model_name)
+        return pipeline("translation", model=f"Helsinki-NLP/opus-mt-{src_code}-{tgt_code}")
     except Exception:
-        st.warning(f"No direct model for {src_code}-{tgt_code}, using multilingual fallback.")
+        st.warning(f"No direct model for {src_code}-{tgt_code}, using fallback.")
         return pipeline("translation", model="facebook/m2m100_418M")
 
 # -----------------------------------------------------------
-# TRANSLATION ACTION
+# TRANSLATION EXECUTION
 # -----------------------------------------------------------
 if translate_btn:
     if not text.strip():
         st.warning("Please enter some text to translate.")
     else:
-        src_code = languages.get(src_lang.strip("🌍 "), "en")
+        src_code = languages.get(src_lang, "en")
         tgt_code = languages.get(tgt_lang, "en")
 
         st.info(f"Translating from **{src_lang}** → **{tgt_lang}** ...")
-
-        # Custom glowing progress bar
-        prog_placeholder = st.empty()
-        for pct in range(0, 101, 6):
+        prog = st.empty()
+        for pct in range(0, 101, 8):
             bar = f"""
-            <div style='background:rgba(255,255,255,0.07);border-radius:10px;padding:4px;'>
-              <div style='width:{pct}%;height:12px;border-radius:8px;
-                  background:linear-gradient(90deg,{primary},{secondary});
-                  box-shadow:0 0 20px {primary};transition:width 0.1s;'></div>
+            <div style='background:rgba(255,255,255,0.1);border-radius:10px;padding:4px;'>
+                <div style='width:{pct}%;height:12px;border-radius:8px;
+                    background:linear-gradient(90deg,{primary},{secondary});
+                    box-shadow:0 0 20px {primary};'></div>
             </div>"""
-            prog_placeholder.markdown(bar, unsafe_allow_html=True)
+            prog.markdown(bar, unsafe_allow_html=True)
             time.sleep(0.03)
-        prog_placeholder.empty()
+        prog.empty()
 
         try:
             translator = load_translator(src_code, tgt_code)
             if translator is None:
-                st.info("Same source and target language — showing original text.")
                 result = text
             else:
                 result = translator(text, max_length=512)[0]["translation_text"]
-
             conf_score = round(max(0.7, 1.0 - temperature * 0.4), 3)
             st.markdown('<div class="glass">', unsafe_allow_html=True)
             st.subheader("🔹 Translated Text")
             st.markdown(f"<div class='result'>{result}</div>", unsafe_allow_html=True)
-
             if show_conf:
                 st.markdown(f"""
-                <div style='background:rgba(255,255,255,0.04);border-radius:10px;padding:4px;margin-top:10px;'>
-                  <div style='width:{conf_score*100}%;height:12px;border-radius:8px;
-                      background:linear-gradient(90deg,{secondary},{primary});
-                      box-shadow:0 0 18px {primary};'></div>
+                <div style='background:rgba(255,255,255,0.05);border-radius:10px;padding:4px;margin-top:10px;'>
+                    <div style='width:{conf_score*100}%;height:12px;border-radius:8px;
+                        background:linear-gradient(90deg,{secondary},{primary});
+                        box-shadow:0 0 18px {primary};'></div>
                 </div>""", unsafe_allow_html=True)
                 st.caption(f"Confidence: {conf_score*100:.1f}%")
 
@@ -328,7 +316,7 @@ if translate_btn:
 st.markdown(f"""
 <hr>
 <div class="footer">
-  <strong>Polyglot v7</strong> — Built with ❤️ using Streamlit & Hugging Face<br>
-  {'🌙 Neon Dark Mode Active' if dark_mode else '☀️ Aurora Light Mode Active'}
+  <strong>Polyglot v8</strong> — Built with ❤️ using Streamlit & Hugging Face<br>
+  {'🌙 Dark Mode Active' if dark_mode else '☀️ Light Mode Active'}
 </div>
 """, unsafe_allow_html=True)
