@@ -5,7 +5,6 @@ Polyglot — AI Language Translator
 A real-time multilingual translator built with Streamlit and Hugging Face models.
 Run: streamlit run app.py
 """
-pip install sentencepiece
 
 import streamlit as st
 from transformers import pipeline
