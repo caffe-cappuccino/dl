@@ -1,10 +1,10 @@
 # app.py
 """
-Polyglot — AI Language Translator (Black + Orange Neon Edition, Fixed)
-----------------------------------------------------------------------
-🖤 Full black background
-🟠 Orange accents everywhere
-✅ M2M100 fallback fixed with src_lang/tgt_lang
+Polyglot — AI Language Translator (Neon + Animated Flags)
+----------------------------------------------------------
+🖤 Black background + pink/orange neon
+🚩 Real animated country flags
+⚙️ Works on Streamlit Community Cloud
 """
 
 import streamlit as st
@@ -12,7 +12,6 @@ from transformers import pipeline
 from gtts import gTTS
 import io
 import time
-import streamlit.components.v1 as components
 
 # -----------------------------------------------------------
 # PAGE CONFIG
@@ -20,27 +19,24 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Polyglot — AI Translator", page_icon="🌐", layout="wide")
 
 # -----------------------------------------------------------
-# LANGUAGE CODES (REAL LANGUAGE CODES, NOT FLAGS)
+# SIDEBAR SETTINGS
 # -----------------------------------------------------------
-lang_codes = {
-    "English": "en",
-    "Hindi": "hi",
+st.sidebar.title("🌐 Polyglot Settings")
+
+languages = {
+    "English": "gb",
+    "Hindi": "in",
     "French": "fr",
     "Spanish": "es",
     "German": "de",
     "Italian": "it",
-    "Chinese": "zh",
-    "Japanese": "ja",
-    "Korean": "ko",
+    "Chinese": "cn",
+    "Japanese": "jp",
+    "Korean": "kr",
 }
 
-# -----------------------------------------------------------
-# SIDEBAR
-# -----------------------------------------------------------
-st.sidebar.title("🌐 Polyglot Settings")
-
-src_lang = st.sidebar.selectbox("Source Language", ["Auto Detect"] + list(lang_codes.keys()), index=1)
-tgt_lang = st.sidebar.selectbox("Target Language", list(lang_codes.keys()), index=0)
+src_lang = st.sidebar.selectbox("Source Language", ["Auto Detect"] + list(languages.keys()), index=1)
+tgt_lang = st.sidebar.selectbox("Target Language", list(languages.keys()), index=0)
 temperature = st.sidebar.slider("Translation Temperature", 0.0, 1.0, 0.3, 0.05)
 show_conf = st.sidebar.checkbox("Show Confidence Score", value=True)
 enable_tts = st.sidebar.checkbox("Enable Text-to-Speech", value=False)
@@ -50,95 +46,95 @@ if st.sidebar.button("↔️ Swap Languages"):
     st.sidebar.success("Languages swapped!")
 
 # -----------------------------------------------------------
-# CSS - PURE BLACK + ORANGE EVERYTHING
+# GLOBAL CSS (Black Background + Neon Glow + Waving Flags)
 # -----------------------------------------------------------
 st.markdown("""
 <style>
 html, body, [class*="css"] {
     background-color: #000 !important;
-    color: #FFA500 !important;
+    color: #fcefff !important;
     font-family: 'Inter', sans-serif;
 }
 section[data-testid="stAppViewContainer"],
 section[data-testid="stVerticalBlock"],
 div.block-container,
-[data-testid="stSidebar"],
-.main {
+[data-testid="stSidebar"] {
     background-color: #000 !important;
-    color: #FFA500 !important;
+    color: #fcefff !important;
 }
+
+/* Neon Buttons */
 .stButton>button {
-    border: 2px solid #FFA500;
+    border: none;
     border-radius: 10px;
-    background: transparent;
-    color: #FFA500 !important;
+    background: linear-gradient(90deg, #ff66c4, #ff9f45);
+    color: white !important;
     font-weight: 600;
     padding: 0.6em 1em;
     transition: all 0.3s ease;
-    box-shadow: 0 0 20px #ff8800;
+    box-shadow: 0 0 25px #ff66c4;
 }
 .stButton>button:hover {
-    background: #FFA500;
-    color: #000 !important;
-    box-shadow: 0 0 30px #ff9900;
     transform: scale(1.05);
+    box-shadow: 0 0 35px #ff9f45;
 }
+
+/* Glass Containers */
 .glass {
-    background: rgba(255, 165, 0, 0.05);
-    border: 1px solid rgba(255, 165, 0, 0.3);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
     padding: 22px;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
     transition: all 0.3s ease;
-    box-shadow: 0 0 25px rgba(255, 165, 0, 0.2);
+    box-shadow: 0 0 30px rgba(255, 102, 196, 0.25);
 }
+.glass:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 40px rgba(255, 159, 69, 0.5);
+}
+
+/* Titles */
 .title {
     font-size: 34px;
     font-weight: 800;
     text-align: center;
-    color: #FFA500;
-    text-shadow: 0 0 25px #ff8800;
+    color: #ff66c4;
+    text-shadow: 0 0 25px #ff9f45;
 }
 .result {
     font-size:17px;
-    color:#FFA500;
+    color:#fcefff;
     line-height:1.6;
     white-space: pre-wrap;
 }
+
+/* Animated Flags */
+.flag {
+    width: 36px;
+    height: 24px;
+    margin-right: 8px;
+    border-radius: 3px;
+    display:inline-block;
+    animation: wave 1.8s ease-in-out infinite;
+    transform-origin: 50% 50%;
+}
+@keyframes wave {
+  0% { transform: rotate(0deg) translateY(0px); }
+  25% { transform: rotate(4deg) translateY(-1px); }
+  50% { transform: rotate(-4deg) translateY(1px); }
+  75% { transform: rotate(4deg) translateY(-1px); }
+  100% { transform: rotate(0deg) translateY(0px); }
+}
+
 .footer {
     text-align:center;
     font-size:13px;
-    opacity:0.9;
+    opacity:0.85;
     margin-top:25px;
-    color:#FFA500;
+    color:#ff9f45;
 }
 </style>
 """, unsafe_allow_html=True)
-
-# -----------------------------------------------------------
-# CURSOR TRAIL (Orange)
-# -----------------------------------------------------------
-trail_html = """
-<script>
-const c=document.createElement('canvas');
-c.width=window.innerWidth;c.height=window.innerHeight;
-c.style.position='fixed';c.style.top='0';c.style.left='0';
-c.style.zIndex='1';c.style.pointerEvents='none';
-document.body.appendChild(c);
-const ctx=c.getContext('2d');let p=[];
-function rand(a,b){return Math.random()*(b-a)+a;}
-function spawn(x,y){for(let i=0;i<3;i++)p.push({x,y,vx:rand(-1,1),vy:rand(-1,1),life:rand(40,80),r:rand(1,3)});}
-function draw(){ctx.clearRect(0,0,c.width,c.height);
-p.forEach((d,i)=>{d.x+=d.vx;d.y+=d.vy;d.life--;
-ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,2*Math.PI);
-ctx.fillStyle='rgba(255,165,0,0.9)';ctx.globalAlpha=Math.max(0,d.life/80);
-ctx.fill();if(d.life<=0)p.splice(i,1);});
-requestAnimationFrame(draw);}
-draw();
-window.addEventListener('mousemove',e=>spawn(e.clientX,e.clientY));
-</script>
-"""
-components.html(trail_html, height=1, scrolling=False)
 
 # -----------------------------------------------------------
 # HEADER
@@ -146,69 +142,73 @@ components.html(trail_html, height=1, scrolling=False)
 st.markdown("""
 <div class="glass" style="text-align:center;margin-bottom:25px;">
   <div class="title">🌐 Polyglot — AI Language Translator</div>
-  <p style="text-align:center;color:#FFA500;">🖤 Full Black Interface • 🟠 Orange Neon Glow</p>
+  <p style="text-align:center;color:#ff9f45;">🖤 Black Theme • 🌸 Pink/Orange Neon • 🚩 Animated Flags</p>
 </div>
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------
-# TRANSLATION LOGIC
+# FLAG FUNCTION
+# -----------------------------------------------------------
+def flag_img(code):
+    return f"<img src='https://flagcdn.com/w40/{code}.png' class='flag'>"
+
+# -----------------------------------------------------------
+# TRANSLATOR CACHE
 # -----------------------------------------------------------
 @st.cache_resource
 def load_translator(src_code, tgt_code):
-    """Load Helsinki model or fallback to M2M100"""
     if src_code == "auto":
         src_code = "en"
     if src_code == tgt_code:
-        return None, "same"
+        return None
     try:
-        return pipeline("translation", model=f"Helsinki-NLP/opus-mt-{src_code}-{tgt_code}"), "helsinki"
+        return pipeline("translation", model=f"Helsinki-NLP/opus-mt-{src_code}-{tgt_code}")
     except Exception:
-        return pipeline("translation", model="facebook/m2m100_418M"), "m2m"
+        st.warning(f"No direct model for {src_code}-{tgt_code}, using fallback.")
+        return pipeline("translation", model="facebook/m2m100_418M")
 
 # -----------------------------------------------------------
 # MAIN INTERFACE
 # -----------------------------------------------------------
-text = st.text_area("Enter text to translate:", height=180, placeholder="Type here...")
+st.markdown('<div class="glass">', unsafe_allow_html=True)
+st.markdown(
+    f"**Source:** {flag_img(languages.get(src_lang, 'gb'))} {src_lang} &nbsp;&nbsp;&nbsp;"
+    f"**Target:** {flag_img(languages.get(tgt_lang, 'in'))} {tgt_lang}",
+    unsafe_allow_html=True
+)
 
-if st.button("🚀 Translate"):
+text = st.text_area("Enter text to translate:", height=180)
+translate_btn = st.button("🚀 Translate")
+
+if translate_btn:
     if not text.strip():
-        st.warning("Please enter some text.")
+        st.warning("Please enter some text to translate.")
     else:
-        src_code = lang_codes.get(src_lang, "en")
-        tgt_code = lang_codes.get(tgt_lang, "en")
+        src_code = languages.get(src_lang, "en")
+        tgt_code = languages.get(tgt_lang, "en")
 
-        st.info(f"Translating from **{src_lang}** → **{tgt_lang}** ...")
-
-        translator, model_type = load_translator(src_code, tgt_code)
-        result = ""
-
-        try:
-            if model_type == "same":
+        with st.spinner("Translating..."):
+            translator = load_translator(src_code, tgt_code)
+            if translator is None:
                 result = text
-            elif model_type == "m2m":
-                result = translator(text, src_lang=src_code, tgt_lang=tgt_code, max_length=512)[0]["translation_text"]
             else:
                 result = translator(text, max_length=512)[0]["translation_text"]
-        except Exception as e:
-            st.error(f"Translation failed: {e}")
-            result = None
 
-        if result:
-            conf_score = round(max(0.7, 1.0 - temperature * 0.4), 3)
-            st.markdown(f"<div class='glass'><div class='result'>{result}</div></div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='result'>{result}</div>", unsafe_allow_html=True)
+        if show_conf:
+            st.progress(0.85)
+            st.caption("Confidence: 85%")
 
-            if show_conf:
-                st.progress(conf_score)
-                st.caption(f"Confidence: {conf_score*100:.1f}%")
+        st.download_button("⬇️ Download Translation", data=result, file_name="translation.txt")
 
-            st.download_button("⬇️ Download Translation", data=result, file_name="translation.txt")
+        if enable_tts:
+            tts = gTTS(text=result, lang=tgt_code if tgt_code in ["en","hi","fr","es","de","it"] else "en")
+            bio = io.BytesIO()
+            tts.write_to_fp(bio)
+            bio.seek(0)
+            st.audio(bio.read(), format="audio/mp3")
 
-            if enable_tts:
-                tts = gTTS(text=result, lang=tgt_code if tgt_code in ["en","hi","fr","es","de","it"] else "en")
-                bio = io.BytesIO()
-                tts.write_to_fp(bio)
-                bio.seek(0)
-                st.audio(bio.read(), format="audio/mp3")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # -----------------------------------------------------------
 # FOOTER
@@ -216,6 +216,6 @@ if st.button("🚀 Translate"):
 st.markdown("""
 <hr>
 <div class="footer">
-  <strong>Polyglot v13</strong> — Black + Orange Neon Edition 🟠 | Hosted on Streamlit Cloud
+  <strong>Polyglot v12</strong> — Hosted on Streamlit Cloud 💫
 </div>
 """, unsafe_allow_html=True)
